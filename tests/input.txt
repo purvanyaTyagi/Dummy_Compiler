@@ -4,7 +4,6 @@ int test(int var, int other){
 }
 int main(){
     int x;
-    int y;
     int z[x + 2];
     while (x >= y){
         int z;

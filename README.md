@@ -136,5 +136,30 @@ This allows different child class of the visitor class to traverse the Syntax tr
 
 This also prevents implementing every single functionality in the Node class. We can just create a child of the virtual class for every new functionality we want.
 
+- **Symbol table generation**: To track variable declarations and inilisation, we create a child of the visitor class and use algorithms that crate a symbol table for this task. 
 
+```cpp
+class symbol_table{
+    std::vector<Scope> scopes;
+    std::vector<std::unordered_map<std::string, bool>> initialised_variables; 
+    int current_scope;
+    public:
+        symbol_table(){
+            current_scope = 0;
+            enter_scope();
+        }
+        void enter_scope();
+        void exit_scope();
 
+        bool declare(const std::string& name, const SymbolInfo& info);
+        bool initialise(const std::string& name);
+        SymbolInfo* lookup(const std::string& name);
+        bool isDeclaredInCurrentScope(const std::string& name);
+        bool isInitialised(const std::string& name);
+        void contruct_symbol_table(const std::vector<std::unique_ptr<ASTNode>>& parsed_code); 
+        void print();
+        std::vector<Scope> return_symbol_table();
+};
+```
+
+A vector<> was used which kept a scope object. This vector was used like a stack to keep track of variable scopes and ensure that no two variables of the same name were declared in the same scope.

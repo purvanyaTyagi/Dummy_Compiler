@@ -10,6 +10,18 @@
 
 ## What i have learned so far?
 
-- **Tokenisation**: 1) How to break input source code into tokens (identifiers, numbers, keywords, symbols)
-                    2) Handling whitespace and new line charachters efficiently.
-                    3) 
+- **Tokenisation**: How to break input source code into tokens (identifiers, numbers, keywords, symbols),Handling whitespace and new line charachters efficiently.
+
+// Keywords
+int, void, if, else, while, return, input, output
+
+// Operators  
++, -, *, /, =, ==, !=, <, <=, >, >=
+
+// Delimiters
+{, }, (, ), [, ], ;, ,
+
+// Literals & Identifiers
+integers, variable names, function names
+
+These were all the tokens that were used in the lexer code.

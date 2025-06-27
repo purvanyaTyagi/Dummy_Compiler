@@ -1,12 +1,10 @@
 int x;
-int test(int var, int other){ 
-    x = var;
-}
-int main(){
-    int x;
-    int z[x + 2];
-    while (x >= y){
-        int z;
+
+int main(int x, int y){
+    int z;
+    z = 3;
+    else{
+        
     }
-    return 3 + 2 * 7 / 2;
 }
+

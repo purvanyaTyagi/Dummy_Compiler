@@ -3,6 +3,7 @@
 #include<vector>
 #include "parser.h"
 #include "lexer.h"
+#include "semantics.h"
 #include <typeinfo>
 
 
@@ -16,8 +17,6 @@ void parser::print_tree(){
         parsed_code[i]->print(0); 
     }
 }
-
-
 void parser::parse_program(){
     while(current < tokens.size()){
         if(tokens[current].value == "int" || tokens[current].value == "void"){
@@ -31,6 +30,10 @@ void parser::parse_program(){
             throw std::runtime_error("Unexpected token in parse_program: " + tokens[current].value + " at line " + std::to_string(tokens[current].line) + ", column " + std::to_string(tokens[current].column));
         }
     }
+}
+
+std::vector<std::unique_ptr<ASTNode>> parser::return_parsed_code(){
+    return std::move(parsed_code);
 }
 
 std::unique_ptr<ASTNode> parser::parse_variable_declaration(){
@@ -384,4 +387,50 @@ void parser::expect(std::string expected_token, const std::string& error_message
     if(current_position >= tokens.size() || tokens[current_position].value != expected_token){
         throw std::runtime_error(error_message + " at line " + std::to_string(tokens[current_position].line) + ", column " + std::to_string(tokens[current_position].column));
     }
+}
+
+void Var_Decal_Node::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void Var_Arr_Decal_Node::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void Func_Decal_Node::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void Var_Initialise_Node::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void While_Node::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void If_Node::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void Else_Node::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void Number_Expr::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void Variable_Expr::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void Binary_Expr::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void Assignment_Expr::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void Rel_Operation::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void return_node::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void output_node::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void input_node::accept(Visitor& visitor){
+    visitor.visit(this);
 }

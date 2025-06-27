@@ -8,6 +8,40 @@
 - A parser that generates a Parse Syntax tree and prints it to the console and checks for syntax errors
 - A semantic analyser that analyses The parsed code and looks for logical errors.
 
+## Project Structure 
+<pre>
+/build - contains compiled object files and executables
+/src - contains the project source code
+/tests - contains input.txt file to write code that is compiled by the dummy compiler
+Makefile
+</pre>
+
+## How to run the project?
+- Clone the directory into your machine
+- The code that needs to be compiled by the dummy compiler goes in test/input.txt
+<pre>
+make test
+</pre>
+this will automatically build the project and run it on the code provided in input.txt
+
+you should see a pretty printed syntax tree as an output along with error longs if there are any errors.
+
+```cpp
+int x;
+
+int main(int x, int y){
+    int z;
+    z = 3;
+    int k;
+    k = input((x + y) + z * 4);
+    output(k + x);
+}
+```
+
+this is a sample code that will run on the current stage of the compiler.
+
+Note: The compilers semantic analyser is not yet complete and hence there are bugs and issues to be fixed as of now.
+
 ## What i have learned so far?
 
 - **Tokenisation**: How to break input source code into tokens (identifiers, numbers, keywords, symbols),Handling whitespace and new line charachters efficiently.
@@ -163,3 +197,18 @@ class symbol_table{
 ```
 
 A vector<> was used which kept a scope object. This vector was used like a stack to keep track of variable scopes and ensure that no two variables of the same name were declared in the same scope.
+
+## Current status of the project
+
+- Lexing and tokenization - done
+
+- Parsing into AST - done
+
+- Symbol table implementation - done
+
+- Semantic analysis - Still need to fine tune and implement some more grammar logic of the language(eg. function calling)
+
+- Code generation for expressions and statements - not done
+
+- End-to-end compilation to a runnable executable - not done
+

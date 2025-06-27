@@ -48,7 +48,6 @@ this the grammer that was used for the parse tree algorithm.
 the program is essentially a list of function and variable declarations. We loop through each of these declarations and parse them recursively.
 
 **An Virtual ASTNode class was implemented**
-<pre>
 ```cpp
 class ASTNode{
     public:
@@ -56,4 +55,4 @@ class ASTNode{
         virtual void print(int indent = 0) const = 0;
         virtual void accept(Visitor& visitor) = 0;
 };
-</pre>
+

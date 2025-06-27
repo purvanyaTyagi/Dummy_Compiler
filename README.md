@@ -8,3 +8,7 @@
 - A parser that generates a Parse Syntax tree and prints it to the console and checks for syntax errors
 - A semantic analyser that analyses The parsed code and looks for logical errors.
 
+## What i have learned so far?
+
+- **Tokenisation**: How to break input source code into tokens (identifiers, numbers, keywords, symbols)
+Handling whitespace and new line charachters efficiently.

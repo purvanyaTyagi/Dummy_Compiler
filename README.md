@@ -103,3 +103,38 @@ int main(int x, int y){
     output(k + x);
 }
 ```
+
+- **Smart pointers**: All object were declared as Unique_ptrs which is a smart_pointer provided by the c++ standard library. This is efficient as unique_ptrs avoid multiple pointers sharing a memory address, This avoids hogging memory, a smart pointer automatically calls destructors of the objects and frees memory when the object is no longer is in use. I learned a lot about how smart pointers work and move semantics in c++ while working on this project.
+
+- **Semantic Analysis**: The ASTNode classes have a function called Accept. which take in a reference to an object of type Visitor. The visitor class was implemented like this.
+
+```cpp
+class Visitor {
+    public:
+        virtual void visit(Var_Decal_Node* node) = 0;
+        virtual void visit(Var_Arr_Decal_Node* node) = 0;
+        virtual void visit(Func_Decal_Node* node) = 0;
+        virtual void visit(Var_Initialise_Node* node) = 0;
+        virtual void visit(While_Node* node) = 0;
+        virtual void visit(Else_Node* node) = 0;
+        virtual void visit(If_Node* node) = 0;
+        virtual void visit(Number_Expr* node) = 0;
+        virtual void visit(Variable_Expr* node) = 0;
+        virtual void visit(Binary_Expr* node) = 0;
+        virtual void visit(Assignment_Expr* node) = 0;
+        virtual void visit(Rel_Operation* node) = 0;
+        virtual void visit(return_node* node) = 0;
+        virtual void visit(input_node* node) = 0;
+        virtual void visit(output_node* node) = 0;
+        virtual ~Visitor() = default;
+};
+```
+this class has a visit function for each node in the **Abstract Syntax Tree**. Now the use of this class is that any another class can inherit from this virtual class and implement these visit functions.
+Then these functions can be called recursively to traverse every node in the Syntax tree, What to do when you visit a node can be defined by unique implementations that the inherited class can make.
+
+This allows different child class of the visitor class to traverse the Syntax tree and perform unique tasks with the data recieved. 
+
+This also prevents implementing every single functionality in the Node class. We can just create a child of the virtual class for every new functionality we want.
+
+
+

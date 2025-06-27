@@ -49,7 +49,7 @@ the program is essentially a list of function and variable declarations. We loop
 
 **An Virtual ASTNode class was implemented**
 <pre>
-'''cpp
+```cpp
 class ASTNode{
     public:
         virtual ~ASTNode() = default;

@@ -10,5 +10,6 @@
 
 ## What i have learned so far?
 
-- **Tokenisation**: How to break input source code into tokens (identifiers, numbers, keywords, symbols)
-Handling whitespace and new line charachters efficiently.
+- **Tokenisation**: 1) How to break input source code into tokens (identifiers, numbers, keywords, symbols)
+                    2) Handling whitespace and new line charachters efficiently.
+                    3) 

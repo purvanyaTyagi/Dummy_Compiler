@@ -3,8 +3,8 @@ int x;
 int main(int x, int y){
     int z;
     z = 3;
-    else{
-        
-    }
+    int k;
+    k = input((x + y) + z * 4);
+    output(k + x);
 }
 

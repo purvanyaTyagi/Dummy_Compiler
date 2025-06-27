@@ -55,4 +55,51 @@ class ASTNode{
         virtual void print(int indent = 0) const = 0;
         virtual void accept(Visitor& visitor) = 0;
 };
+```
+multiple other classes inherited this base class. Each child class had its own implementation of the print and accept functions. A default destructor was used for all.
 
+These child classes include classes like, While node, If node, variable declaration node etc.
+
+The nodes also implement a print function that is usefull in pretty printing the Abstract syntax tree.
+
+here is an example,
+<pre>
+Parser Initialised
+Variable: int x
+function: int main body: 
+  Variable: int z
+  Variable initialisation: z = 
+    Number: 3
+  Variable: int k
+  Variable initialisation: k = 
+    input expression: 
+      Binary Expression: 
+        Binary Expression: 
+          Variable: x
+          operation: +
+          Variable: y
+        operation: +
+        Binary Expression: 
+          Variable: z
+          operation: *
+          Number: 4
+  output expression: 
+    Binary Expression: 
+      Variable: k
+      operation: +
+      Variable: x
+</pre>
+
+this is the generated parse tree for the following code,
+
+```cpp
+int x;
+
+int main(int x, int y){
+    int z;
+    z = 3;
+    int k;
+    k = input((x + y) + z * 4);
+    output(k + x);
+}
+```

@@ -27,6 +27,7 @@ class Rel_Operation;
 class return_node;
 class output_node;
 class input_node;
+class Func_Call_Node;
 
 class Visitor {
     public:
@@ -45,6 +46,7 @@ class Visitor {
         virtual void visit(return_node* node) = 0;
         virtual void visit(input_node* node) = 0;
         virtual void visit(output_node* node) = 0;
+        virtual void visit(Func_Call_Node* node) = 0;
         virtual ~Visitor() = default;
 };
 
@@ -67,5 +69,7 @@ class Semantic_Analyser : public Visitor {
         void visit(return_node* node) override;
         void visit(input_node* node) override;
         void visit(output_node* node) override;
-        void Analyse_code(std::vector<std::unique_ptr<ASTNode>> parsed_code);
+        void visit(Func_Call_Node* node) override;
+        void Analyse_code(const std::vector<std::unique_ptr<ASTNode>> &parsed_code);
+        bool check_return_statement(std::vector<std::unique_ptr<ASTNode>>* body);
 };

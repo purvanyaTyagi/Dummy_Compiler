@@ -165,6 +165,16 @@ void symbol_table::print() {
     std::cout << "=== End of Symbol Table ===" << std::endl;
 }
 
+std::vector<std::unordered_map<std::string, bool>> symbol_table::return_initilasied_variables(){
+    return initialised_variables;
+}
+
+std::vector<Scope>& symbol_table::return_reference_table(){
+    return scopes;
+}
+std::vector<std::unordered_map<std::string, bool>>& symbol_table::return_initialised_reference_table(){
+    return initialised_variables;
+}
 
 
 

@@ -1,10 +1,9 @@
-int x;
-
-int main(int x, int y){
-    int z;
-    z = 3;
-    int k;
-    k = input((x + y) + z * 4);
-    output(k + x);
+int func(int x, int y){
+    return x;
+}
+int func1(int x){
+    return y;
 }
 
+int main(int y){
+}

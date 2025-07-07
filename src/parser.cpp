@@ -13,7 +13,7 @@ void print_ident(int indent){
 }
 
 void parser::print_tree(){
-    for(int i = 0; i < parsed_code.size(); ++i){
+    for(long unsigned int i = 0; i < parsed_code.size(); ++i){
         parsed_code[i]->print(0); 
     }
 }
@@ -184,6 +184,18 @@ std::vector<std::unique_ptr<ASTNode>> parser::parse_compound_statement(){
             //if the next token is a semicolon, we can safely assume that the expression is complete.
             //if the next token is not a semicolon, we can assume that the expression is not complete and we need to parse it further.
             body.push_back(std::make_unique<return_node>(std::move(expr)));
+        }else if(tokens[current].type == TokenType::identifiers && tokens[current + 1].value == std::string(1, '(')){
+            std::string name = tokens[current].value;
+            current += 2;
+            std::vector<std::unique_ptr<ASTNode>> params;
+            while(tokens[current].value != ")"){
+                if(tokens[current].value == ","){
+                    current += 1;
+                }
+                params.push_back(parse_relational_expression());
+            }
+            current += 2;
+            body.push_back(std::make_unique<Func_Call_Node>(name, std::move(params), "void"));
         }
         else if(tokens[current].type == TokenType::identifiers && tokens[current + 1].value == std::string(1, '=') && current < tokens.size()){
             auto name = tokens[current].value;
@@ -229,6 +241,7 @@ std::unique_ptr<ASTNode> parser::parse_relational_expression(){
 }
 
 std::unique_ptr<ASTNode> parser::parse_simple_expression(){ //current points at the first token of the expression. after parsing, it will point at the next token after the expression.
+    
     auto expr = parse_term();
     while(tokens[current].value == std::string(1, '+') || tokens[current].value == std::string(1, '-')){
         std::string op = tokens[current].value;
@@ -239,6 +252,7 @@ std::unique_ptr<ASTNode> parser::parse_simple_expression(){ //current points at 
     return expr;
 }
 std::unique_ptr<ASTNode> parser::parse_term(){
+    
     auto expr = parseFactor();
     while(tokens[current].value == std::string(1, '*') || tokens[current].value == std::string(1, '/')){
         std::string op = tokens[current].value;
@@ -254,7 +268,21 @@ std::unique_ptr<ASTNode> parser::parseFactor(){
         std::string value = tokens[current].value;
         current += 1;
         return std::make_unique<Number_Expr>(std::stoi(value));
-    }else if(tokens[current].type == TokenType::identifiers){
+    }else if(tokens[current].type == TokenType::identifiers && tokens[current + 1].value == "("){
+        
+        std::string name = tokens[current].value;
+        current += 2;
+        std::vector<std::unique_ptr<ASTNode>> params;
+        while(tokens[current].value != ")"){
+            if(tokens[current].value == ","){
+                current += 1;
+            }
+            params.push_back(parse_relational_expression());
+        }
+        current += 1;
+        return std::make_unique<Func_Call_Node>(name, std::move(params), "int");
+    }
+    else if(tokens[current].type == TokenType::identifiers){
         std::string name = tokens[current].value;   
         current += 1;
         return std::make_unique<Variable_Expr>(name);
@@ -289,7 +317,7 @@ void Var_Arr_Decal_Node::print(int indent) const {
 void Func_Decal_Node::print(int indent) const {
     print_ident(indent);
     std::cout << "function: " << return_type << " " << name << " body: " << std::endl; //implement parameter printing
-    for(int i = 0; i < body.size(); ++i){
+    for(long unsigned int i = 0; i < body.size(); ++i){
         body[i]->print(indent + 1);
     }
 }
@@ -306,7 +334,7 @@ void While_Node::print(int indent) const {
     std::cout << std::endl;
     print_ident(indent);
     std::cout << "While loop body: " << std::endl;
-    for(int i = 0; i < body.size(); ++i){
+    for(long unsigned int i = 0; i < body.size(); ++i){
         body[i]->print(indent+1);
     }
 }
@@ -314,7 +342,7 @@ void While_Node::print(int indent) const {
 void Else_Node::print(int indent) const {
     print_ident(indent);
     std::cout << "else body: " << std::endl;
-    for(int i = 0; i < body.size(); ++i){
+    for(long unsigned int i = 0; i < body.size(); ++i){
         body[i]->print(indent+1);
     }
 }
@@ -326,7 +354,7 @@ void If_Node::print(int indent) const {
     std::cout << std::endl;
     print_ident(indent);
     std::cout << "If body: " << std::endl;
-    for(int i = 0; i < body.size(); ++i){
+    for(long unsigned int i = 0; i < body.size(); ++i){
         body[i]->print(indent+1);
     }
 }
@@ -383,11 +411,24 @@ void input_node::print(int indent) const {
     input_val->print(indent + 1);
 }
 
+void Func_Call_Node::print(int indent) const {
+    print_ident(indent);
+    std::cout << "Functional calling node: " << name <<std::endl;
+    print_ident(indent);
+    std::cout << "Return Type: " << return_type << std::endl;
+    print_ident(indent);
+    std::cout << "parameters: " << std::endl;
+    for(auto itr = params.begin(); itr != params.end(); ++itr){
+        (*itr)->print(indent + 1);
+    }
+}
+
 void parser::expect(std::string expected_token, const std::string& error_message, int current_position) {
-    if(current_position >= tokens.size() || tokens[current_position].value != expected_token){
+    if(static_cast<unsigned long>(current_position) >= tokens.size() || tokens[current_position].value != expected_token){
         throw std::runtime_error(error_message + " at line " + std::to_string(tokens[current_position].line) + ", column " + std::to_string(tokens[current_position].column));
     }
 }
+
 
 void Var_Decal_Node::accept(Visitor& visitor){
     visitor.visit(this);
@@ -432,5 +473,8 @@ void output_node::accept(Visitor& visitor){
     visitor.visit(this);
 }
 void input_node::accept(Visitor& visitor){
+    visitor.visit(this);
+}
+void Func_Call_Node::accept(Visitor& visitor){
     visitor.visit(this);
 }

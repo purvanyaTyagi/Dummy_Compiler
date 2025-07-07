@@ -113,7 +113,18 @@ class Func_Decal_Node : public ASTNode {
         void accept(Visitor& visitor) override;
         Func_Decal_Node(std::string return_type, std::string name,
              std::vector<std::unique_ptr<ASTNode>> body,
-              std::vector<std::pair<std::string, std::string>> params) : return_type(return_type), name(name), body(std::move(body)), params(params){}
+            std::vector<std::pair<std::string, std::string>> params) : return_type(return_type), name(name), body(std::move(body)), params(params){}
+};
+
+class Func_Call_Node : public ASTNode {
+    public:
+        std::string name;
+        std::vector<std::unique_ptr<ASTNode>> params;
+        std::string return_type;
+        void print(int indent = 0) const override;
+        void accept(Visitor& visitor) override;
+        
+        Func_Call_Node(std::string name, std::vector<std::unique_ptr<ASTNode>> params, std::string return_type) : name(name), params(std::move(params)), return_type(return_type) {}
 };
 
 class Var_Initialise_Node : public ASTNode {
@@ -262,4 +273,7 @@ class symbol_table{
         void contruct_symbol_table(const std::vector<std::unique_ptr<ASTNode>>& parsed_code); 
         void print();
         std::vector<Scope> return_symbol_table();
+        std::vector<Scope>& return_reference_table();
+        std::vector<std::unordered_map<std::string, bool>>& return_initialised_reference_table();
+        std::vector<std::unordered_map<std::string, bool>> return_initilasied_variables();
 };

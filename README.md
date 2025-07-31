@@ -43,8 +43,6 @@ int main(int x, int y){
 
 This is a sample code that will run on the current stage of the compiler.
 
-The compiler's semantic analyzer is not yet complete, and so there are bugs and issues to be fixed as of now.
-
 ## What have I learned so far?
 
 - **Tokenisation**: How to break input source code into tokens (identifiers, numbers, keywords, symbols), handling whitespace and new line characters efficiently.

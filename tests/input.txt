@@ -1,9 +1,21 @@
-int func(int x, int y){
-    return x;
-}
-int func1(int x){
-    return y;
-}
-
 int main(int y){
+    int z;
+    z = 5 + y;
+    int k;
+    if(z > 4){
+        if(z > 1){
+            k = 2;
+        }else{
+            k = 3;
+        }
+    }else{
+        k = 5;
+    }
+
+    int l;
+    int m; 
+    input(l);
+    input(m); 
+    output(l + m*l + m*4 + (3+(l*3)));
+    return 5 + l;
 }

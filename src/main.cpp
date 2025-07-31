@@ -2,6 +2,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "semantics.h"
+#include "Intermediate_Code_Gen.h"
 
 int main(int argc, char* argv[]){
     // std::string code = R"(hello main() {
@@ -35,10 +36,14 @@ int main(int argc, char* argv[]){
         // std::vector<Scope> symbol_table_out = symbol_table_1.return_symbol_table();
 
 
-        // parser parser_2(lexer.return_tokenized());
+        parser parser_2(lexer.return_tokenized());
+        parser_2.parse_program();
         Semantic_Analyser analyse_symantics;
         // // parser_2.parse_program();
         analyse_symantics.Analyse_code(parser_1.return_parsed_code());
+
+        IRGenerator IrGenerator;
+        IrGenerator.generate_instructions(parser_2.return_parsed_code());
         return 0;
     }else{
         std::cout << "no code received"; 

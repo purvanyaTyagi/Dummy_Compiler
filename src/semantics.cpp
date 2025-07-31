@@ -2,6 +2,7 @@
 #include<vector>
 #include<memory>
 #include<unordered_map>
+#include<algorithm>
 #include "lexer.h"
 #include "parser.h"
 #include "semantics.h"
@@ -206,6 +207,8 @@ void Semantic_Analyser::visit(Assignment_Expr* node){
     auto& symbol_table_reference = SymbolTab.return_reference_table();
     auto& initialised_table_reference = SymbolTab.return_initialised_reference_table();
 
+    
+
     if(symbol_table_reference.size() == initialised_table_reference.size()){
         for(long unsigned int i = 0; i < symbol_table_reference.size(); i++){
             if(symbol_table_reference[i].find(node->name) != symbol_table_reference[i].end()){
@@ -234,6 +237,11 @@ void Semantic_Analyser::visit(If_Node* node){
     node->expression->accept(*this);
     Scope Current_scope = SymbolTab.return_symbol_table().back();
     auto initilalised_variables = SymbolTab.return_initilasied_variables().back();
+    auto& symbol_table_reference = SymbolTab.return_reference_table();
+    auto& initilalised_table_reference = SymbolTab.return_initialised_reference_table();
+    auto size = initilalised_table_reference.size();
+    std::vector<std::string> non_initialised_variables;
+
     SymbolTab.enter_scope();
     for(auto itr = Current_scope.begin(); itr != Current_scope.end(); ++itr){
         SymbolTab.declare(itr->first, itr->second);
@@ -241,8 +249,20 @@ void Semantic_Analyser::visit(If_Node* node){
     for(auto itr = initilalised_variables.begin(); itr != initilalised_variables.end(); ++itr){
         SymbolTab.initialise(itr->first);
     }
+    for(const auto& pair : symbol_table_reference.back()){
+        if(!SymbolTab.isInitialised(pair.first)){
+            non_initialised_variables.push_back(pair.first);
+        }
+    }
     Analyse_code(node->body);
 
+    for(const auto& pair : symbol_table_reference.back()){
+        if(SymbolTab.isInitialised(pair.first) && std::find(non_initialised_variables.begin(), non_initialised_variables.end(), std::string(pair.first)) != non_initialised_variables.end()){
+            for(long unsigned int i = 0; i < initilalised_table_reference.size(); i++){
+                initilalised_table_reference[i].erase(pair.first);
+            }
+        }
+    }
     // auto& symbol_table_reference = SymbolTab.return_reference_table();
     // auto& initialised_table_reference = SymbolTab.return_initialised_reference_table();
     // auto size = initialised_table_reference.size();
@@ -256,6 +276,7 @@ void Semantic_Analyser::visit(If_Node* node){
     //         }
     //     }
     // }
+
     SymbolTab.exit_scope();
 }
 
@@ -322,8 +343,13 @@ void Semantic_Analyser::visit(output_node* node){
 }
 
 void Semantic_Analyser::visit(input_node* node){
-    if(!dynamic_cast<Variable_Expr*>((node->input_val).get())){
-        throw std::runtime_error("Only Variables allowed in input expression"); 
+    if(Variable_Expr* varExpr = dynamic_cast<Variable_Expr*>((node->input_val).get())){
+        if(!SymbolTab.isDeclaredInCurrentScope(varExpr->name)){
+            throw std::runtime_error("Variable has not been declared yet: " + varExpr->name);
+        }
+        SymbolTab.initialise(varExpr->name);
+    }else{
+        throw std::runtime_error("invalid expression in input, only variable expressions are allowed.");
     }
 }
 

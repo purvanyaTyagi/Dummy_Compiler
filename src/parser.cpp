@@ -164,7 +164,22 @@ std::vector<std::unique_ptr<ASTNode>> parser::parse_compound_statement(){
             current += 1;
             if_body = parse_compound_statement();
             current += 1; //assuming the next token is a closing curly bracket
-            body.push_back(std::make_unique<If_Node>(std::move(if_body), std::move(expression)));
+            if(tokens[current].value == "else" && current < tokens.size()){
+                int save_current = current;
+
+                std::vector<std::unique_ptr<ASTNode>> else_body;
+                current += 1;
+                expect("{", "Expected opening curly bracket", current);
+                current += 1;
+                else_body = parse_compound_statement();
+                expect("}", "Expected closing curly bracket" , current);
+                current += 1; //assuming the next token is a closing curly bracket
+                std::unique_ptr<Else_Node> else_node = std::make_unique<Else_Node>(std::move(else_body));
+                current = save_current;
+                body.push_back(std::make_unique<If_Node>(std::move(if_body), std::move(expression), true, std::move(else_node)));
+            }else{
+                body.push_back(std::make_unique<If_Node>(std::move(if_body), std::move(expression), false, nullptr));
+            }
         }
         else if(tokens[current].value == "else" && current < tokens.size()){
             std::vector<std::unique_ptr<ASTNode>> else_body;
@@ -174,7 +189,9 @@ std::vector<std::unique_ptr<ASTNode>> parser::parse_compound_statement(){
             else_body = parse_compound_statement();
             expect("}", "Expected closing curly bracket" , current);
             current += 1; //assuming the next token is a closing curly bracket
-            body.push_back(std::make_unique<Else_Node>(std::move(else_body)));
+            std::unique_ptr<Else_Node> else_node = std::make_unique<Else_Node>(std::move(else_body));
+            // body.push_back(std::make_unique<Else_Node>(std::move(else_body)));
+            body.push_back(std::move(else_node));
         }
         else if(tokens[current].value == "return" && current < tokens.size()){
             current += 1;
@@ -216,7 +233,13 @@ std::vector<std::unique_ptr<ASTNode>> parser::parse_compound_statement(){
             expect(";", "Expected semicolon after output statement", current);
             current += 1;
             body.push_back(std::make_unique<output_node>(std::move(output_val)));   
-        }else if(tokens[current].value == "}" && current < tokens.size()){
+        }else if(tokens[current].value == "input" && current < tokens.size()){
+            current += 2;
+            auto expr = parse_relational_expression();
+            current += 2;
+            body.push_back(std::make_unique<input_node>(std::move(expr)));
+        }
+        else if(tokens[current].value == "}" && current < tokens.size()){
             break;
         }else{
             throw std::runtime_error("Unexpected Token in compound statement: " + tokens[current].value);
@@ -292,12 +315,13 @@ std::unique_ptr<ASTNode> parser::parseFactor(){
         auto expr = parse_relational_expression();
         current += 1;
         return expr;
-    }else if(tokens[current].value == "input"){
-        current += 2;
-        auto expr = parse_relational_expression();
-        current += 1;
-        return std::make_unique<input_node>(std::move(expr)); 
     }
+    // else if(tokens[current].value == "input"){
+    //     current += 2;
+    //     auto expr = parse_relational_expression();
+    //     current += 1;
+    //     return std::make_unique<input_node>(std::move(expr)); 
+    // }
     else {
         throw std::runtime_error("Unexpected token in parseFactor: " + tokens[current].value);
     }

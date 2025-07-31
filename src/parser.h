@@ -155,12 +155,13 @@ class Else_Node : public ASTNode {
 
 class If_Node : public ASTNode {
     public:
-
         std::vector<std::unique_ptr<ASTNode>> body;
         std::unique_ptr<ASTNode> expression;
+        bool does_else_exist = false;
+        std::unique_ptr<ASTNode> else_node;
         void print(int indent = 0) const override;
         void accept(Visitor& visitor) override;
-        If_Node(std::vector<std::unique_ptr<ASTNode>> body, std::unique_ptr<ASTNode> expression) : body(std::move(body)), expression(std::move(expression)){}  
+        If_Node(std::vector<std::unique_ptr<ASTNode>> body, std::unique_ptr<ASTNode> expression, bool does_else_exist, std::unique_ptr<ASTNode> else_node) : body(std::move(body)), expression(std::move(expression)), does_else_exist(does_else_exist), else_node(std::move(else_node)){}  
 };
 
 class Number_Expr : public ASTNode {

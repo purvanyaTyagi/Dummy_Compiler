@@ -205,7 +205,7 @@ A vector<> was used, which kept a scope object. This vector was used like a stac
 
 I used TAC to create an Intermediate Representation of the code. This was done by creating an IRGenerator class, which inherits from the Visitor class. 
 
-```
+```cpp
 enum class OpCode {
     ADD, SUB, MUL, DIV, MOD,
     EQ, NE, LT, LE, GT, GE,
